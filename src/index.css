@@ -1,3 +1,4 @@
 @import "tailwindcss";
+@plugin "daisyui";
 /* 56cbf9 - Primary color*/
 /* 051923 - Secondary color */
