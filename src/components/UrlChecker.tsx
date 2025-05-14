@@ -9,13 +9,18 @@ const UrlChecker = () => {
                 </p>
             </section>
             <section className="bg-[#f5f5f5] shadow-2xl max-w-2xl mx-auto mt-20 py-10 px-5 rounded-md">
-                <form className="flex items-center gap-2">
-                    <input
-                        type="text"
-                        placeholder="http://example.com"
-                        className="input w-full"
-                    />{" "}
-                    <button className="btn bg-[#56cbf9]">Analyze</button>
+                <form className="">
+                    <h3 className="text-xl font-semibold text-center mb-4">
+                        Is This URL Safe? Enter to Find Out!
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            placeholder="http://example.com"
+                            className="input w-full focus:outline-0"
+                        />{" "}
+                        <button className="btn bg-[#56cbf9]">Analyze</button>
+                    </div>
                 </form>
             </section>
         </div>
