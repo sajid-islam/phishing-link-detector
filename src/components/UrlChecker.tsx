@@ -53,18 +53,25 @@ const UrlChecker = () => {
             "url"
         ) as HTMLInputElement;
 
-        const url = input?.value;
-        const urlHostname = url.split("//")[1];
-        const urlScheme = url.split(":")[0];
-        const splittedUrlHostname = urlHostname.split(/[/:.?=#&]+/);
-        console.log(splittedUrlHostname);
-        if (
-            splittedUrlHostname.some((urlWord) =>
-                phishingKeywords.some((pw) =>
-                    pw.includes(urlWord.toLowerCase())
-                )
-            )
-        ) {
+        const url = new URL(input?.value);
+        const urlHostname = url.hostname;
+        console.log(urlHostname);
+        const totalSubdomains = urlHostname.split(".").slice(0, -1).length;
+        console.log(totalSubdomains);
+        const urlProtocol = url.protocol;
+
+        // Condition 1: check the phishing keywords in url
+        if (phishingKeywords.some((pw) => urlHostname.includes(pw))) {
+            setScore(score + 2);
+        }
+
+        //Condition 2: to many subdomains check
+        if (totalSubdomains > 3) {
+            setScore(score + 2);
+        }
+
+        //Condition 3:
+        if (urlHostname.length <= 4) {
             setScore(score + 2);
         }
     };
