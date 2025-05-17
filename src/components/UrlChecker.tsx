@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import punycode from "punycode/";
 type InputEvent = React.FormEvent<HTMLFormElement>;
 const phishingKeywords: string[] = [
     "login",
@@ -43,6 +43,63 @@ const phishingKeywords: string[] = [
     "billing",
     "transaction",
 ];
+const abusedTlds: string[] = [
+    "tk",
+    "ml",
+    "ga",
+    "cf",
+    "gq", // Free domains from Freenom
+    "xyz",
+    "top",
+    "club",
+    "online", // Cheap/abused
+    "work",
+    "support",
+    "site",
+    "click",
+    "loan",
+    "men",
+    "stream",
+    "trade",
+    "win",
+    "download",
+    "party",
+    "biz",
+    "info",
+    "fit",
+    "rest",
+    "review",
+    "accountant",
+    "racing",
+    "science",
+    "date",
+    "faith",
+    "webcam",
+    "cricket",
+    "ninja",
+    "host",
+    "pw",
+    "icu",
+    "cam",
+    "monster",
+    "cyou",
+    "bar",
+    "kim",
+    "space",
+    "zip",
+    "country",
+    "cf",
+    "cc",
+    "ml",
+    "buzz",
+    "mom",
+    "lol",
+    "cn.com",
+    "gdn",
+    "ml",
+    "ml",
+    "xn--p1ai", // includes IDNs & repurposed ccTLDs
+];
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
@@ -55,13 +112,13 @@ const UrlChecker = () => {
 
         const url = new URL(input?.value);
         const urlHostname = url.hostname;
-        console.log(urlHostname);
         const totalSubdomains = urlHostname.split(".").slice(0, -1).length;
-        console.log(totalSubdomains);
         const urlProtocol = url.protocol;
+        const urlTld = url.host.split(".").pop();
+        console.log(punycode.toASCII("paypal.com").includes("xn--"));
 
         // Condition 1: check the phishing keywords in url
-        if (phishingKeywords.some((pw) => urlHostname.includes(pw))) {
+        if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
             setScore(score + 2);
         }
 
@@ -70,9 +127,32 @@ const UrlChecker = () => {
             setScore(score + 2);
         }
 
-        //Condition 3:
+        //Condition 3: check shorteners url
         if (urlHostname.length <= 4) {
             setScore(score + 2);
+        }
+
+        //Condition 4: check the protocol secure or not
+        if (urlProtocol === "http:") {
+            setScore(score + 2);
+        }
+
+        //Condition 5: check the url is IP_Based URL or not
+        if (
+            /^(?:\d{1,3}\.){3}\d{1,3}$/.test(urlHostname) ||
+            /^\[([a-fA-F0-9:]+)\]$/.test(urlHostname)
+        ) {
+            setScore(score + 3);
+        }
+
+        //Condition 6: check abused tlds
+        if (abusedTlds.some((tld) => tld === urlTld)) {
+            setScore(score + 2);
+        }
+
+        //Condition 7: check homograph characters
+        if (punycode.toASCII(urlHostname).includes("xn--")) {
+            setScore(score + 6);
         }
     };
     console.log(score);
