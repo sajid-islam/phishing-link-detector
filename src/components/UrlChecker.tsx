@@ -103,8 +103,6 @@ const abusedTlds: string[] = [
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
-    const specialCharRex =
-        /[! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~]/;
     const handleUrlChecker = (e: InputEvent) => {
         e.preventDefault();
 
@@ -117,7 +115,9 @@ const UrlChecker = () => {
         const totalSubdomains = urlHostname.split(".").slice(0, -1).length;
         const urlProtocol = url.protocol;
         const urlTld = url.host.split(".").pop();
-        console.log(url);
+        const specialCharInUrl: number | undefined =
+            url.href.match(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g)?.length ??
+            0;
 
         // Condition 1: check the phishing keywords in url
         if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
@@ -160,6 +160,11 @@ const UrlChecker = () => {
         // Condition 8: Check URL length
         if (url.origin.length > 100) {
             setScore(score + 2);
+        }
+
+        // Condition 9: Many special character checking
+        if (specialCharInUrl > 5) {
+            setScore(score + 1);
         }
     };
     console.log(score);
