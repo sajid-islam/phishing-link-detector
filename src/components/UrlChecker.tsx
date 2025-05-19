@@ -110,12 +110,14 @@ const UrlChecker = () => {
             "url"
         ) as HTMLInputElement;
 
-        const url = new URL(input?.value);
-        const urlHostname = url.hostname;
-        const totalSubdomains = urlHostname.split(".").slice(0, -1).length;
-        const urlProtocol = url.protocol;
-        const urlTld = url.host.split(".").pop();
-        const specialCharInUrl: number | undefined =
+        const url: URL = new URL(input?.value);
+        const urlHostname: string = url.hostname;
+        const totalSubdomains: number = urlHostname
+            .split(".")
+            .slice(0, -1).length;
+        const urlProtocol: string = url.protocol;
+        const urlTld: string | undefined = url.host.split(".").pop();
+        const specialCharInUrl: number =
             url.href.match(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g)?.length ??
             0;
 
