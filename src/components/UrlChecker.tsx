@@ -115,7 +115,7 @@ const UrlChecker = () => {
         const totalSubdomains = urlHostname.split(".").slice(0, -1).length;
         const urlProtocol = url.protocol;
         const urlTld = url.host.split(".").pop();
-        console.log(punycode.toASCII("paypal.com").includes("xn--"));
+        console.log(url);
 
         // Condition 1: check the phishing keywords in url
         if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
@@ -154,6 +154,8 @@ const UrlChecker = () => {
         if (punycode.toASCII(urlHostname).includes("xn--")) {
             setScore(score + 6);
         }
+
+        // Condition 8: Check URL length
     };
     console.log(score);
     return (
