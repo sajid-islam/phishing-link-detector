@@ -103,6 +103,8 @@ const abusedTlds: string[] = [
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
+    const specialCharRex =
+        /[! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~]/;
     const handleUrlChecker = (e: InputEvent) => {
         e.preventDefault();
 
@@ -156,6 +158,9 @@ const UrlChecker = () => {
         }
 
         // Condition 8: Check URL length
+        if (url.origin.length > 100) {
+            setScore(score + 2);
+        }
     };
     console.log(score);
     return (
