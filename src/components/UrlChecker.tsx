@@ -127,14 +127,9 @@ const UrlChecker = () => {
         const fetchDomainInfo = async () => {
             try {
                 const domainInfo = await fetch(
-                    "https://trapurl.vercel.app/api/whois",
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        method: "POST",
-                        body: JSON.stringify({ domainName: urlHostname }),
-                    }
+                    `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=${
+                        import.meta.env.VITE_WHOIS_API_KEY
+                    }&domainName=${urlHostname}&outputFormat=JSON`
                 );
                 return domainInfo.json();
             } catch (error) {
@@ -150,22 +145,22 @@ const UrlChecker = () => {
 
         // Condition 1: check the phishing keywords in url
         if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         //Condition 2: to many subdomains check
         if (totalSubdomains > 3) {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         //Condition 3: check shorteners url
         if (urlHostname.length <= 4) {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         //Condition 4: check the protocol secure or not
         if (urlProtocol === "http:") {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         //Condition 5: check the url is IP_Based URL or not
@@ -173,27 +168,27 @@ const UrlChecker = () => {
             /^(?:\d{1,3}\.){3}\d{1,3}$/.test(urlHostname) ||
             /^\[([a-fA-F0-9:]+)\]$/.test(urlHostname)
         ) {
-            setScore(score + 3);
+            setScore((prevScore) => prevScore + 3);
         }
 
         //Condition 6: check abused tlds
         if (abusedTlds.some((tld) => tld === urlTld)) {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         //Condition 7: check homograph characters
         if (punycode.toASCII(urlHostname).includes("xn--")) {
-            setScore(score + 6);
+            setScore((prevScore) => prevScore + 6);
         }
 
         // Condition 8: Check URL length
         if (url.origin.length > 100) {
-            setScore(score + 2);
+            setScore((prevScore) => prevScore + 2);
         }
 
         // Condition 9: Many special character checking
         if (specialCharInUrl > 5) {
-            setScore(score + 1);
+            setScore((prevScore) => prevScore + 1);
         }
 
         // Condition 10: Check domain age -
@@ -201,13 +196,13 @@ const UrlChecker = () => {
             const domainAge = thisYear - domainCreatedDate;
 
             if (domainAge < 1) {
-                setScore(score + 5);
+                setScore((prevScore) => prevScore + 5);
             } else if (domainAge >= 1 && domainAge <= 2) {
-                setScore(score + 3);
+                setScore((prevScore) => prevScore + 3);
             } else if (domainAge > 2 && domainAge <= 5) {
-                setScore(score + 1);
+                setScore((prevScore) => prevScore + 1);
             } else {
-                setScore(score + 0);
+                setScore((prevScore) => prevScore + 0);
             }
         }
     };
