@@ -126,21 +126,23 @@ const UrlChecker = () => {
 
         const fetchDomainInfo = async () => {
             try {
-                const domainInfo = await fetch(
-                    `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=${
-                        import.meta.env.VITE_WHOIS_API_KEY
-                    }&domainName=${urlHostname}&outputFormat=JSON`
-                );
+                const domainInfo = await fetch("/api/whois", {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify({ domainName: urlHostname }),
+                });
                 return domainInfo.json();
             } catch (error) {
                 console.error("There was an error", error);
             }
         };
         const domainInfo = await fetchDomainInfo();
-        console.log(domainInfo);
+
         const domainCreatedDate =
             domainInfo?.WhoisRecord?.createdDate?.split("-")[0];
-        // dataError = MISSING_WHOIS_DATA
+
         const thisYear = new Date().getFullYear();
 
         // Condition 1: check the phishing keywords in url
