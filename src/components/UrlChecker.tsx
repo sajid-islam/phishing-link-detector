@@ -126,13 +126,16 @@ const UrlChecker = () => {
 
         const fetchDomainInfo = async () => {
             try {
-                const domainInfo = await fetch("/api/whois", {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    method: "POST",
-                    body: JSON.stringify({ domainName: urlHostname }),
-                });
+                const domainInfo = await fetch(
+                    "https://trapurl.vercel.app/api/whois",
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        method: "POST",
+                        body: JSON.stringify({ domainName: urlHostname }),
+                    }
+                );
                 return domainInfo.json();
             } catch (error) {
                 console.error("There was an error", error);
