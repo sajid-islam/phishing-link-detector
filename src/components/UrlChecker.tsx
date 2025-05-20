@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import punycode from "punycode/";
-import moment from "moment";
 
 type InputEvent = React.FormEvent<HTMLFormElement>;
 
@@ -190,6 +189,21 @@ const UrlChecker = () => {
         // Condition 9: Many special character checking
         if (specialCharInUrl > 5) {
             setScore(score + 1);
+        }
+
+        // Condition 10: Check domain age -
+        if (!domainInfo.WhoisRecord.dataError) {
+            const domainAge = thisYear - domainCreatedDate;
+
+            if (domainAge < 1) {
+                setScore(score + 5);
+            } else if (domainAge >= 1 && domainAge <= 2) {
+                setScore(score + 3);
+            } else if (domainAge > 2 && domainAge <= 5) {
+                setScore(score + 1);
+            } else {
+                setScore(score + 0);
+            }
         }
     };
     console.log(score);
