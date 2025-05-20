@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import punycode from "punycode/";
+import moment from "moment";
+
 type InputEvent = React.FormEvent<HTMLFormElement>;
+
 const phishingKeywords: string[] = [
     "login",
     "logon",
@@ -103,7 +106,8 @@ const abusedTlds: string[] = [
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
-    const handleUrlChecker = (e: InputEvent) => {
+
+    const handleUrlChecker = async (e: InputEvent) => {
         e.preventDefault();
 
         const input = e.currentTarget.elements.namedItem(
@@ -120,6 +124,25 @@ const UrlChecker = () => {
         const specialCharInUrl: number =
             url.href.match(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/g)?.length ??
             0;
+
+        const fetchDomainInfo = async () => {
+            try {
+                const domainInfo = await fetch(
+                    `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=${
+                        import.meta.env.VITE_WHOIS_API_KEY
+                    }&domainName=${urlHostname}&outputFormat=JSON`
+                );
+                return domainInfo.json();
+            } catch (error) {
+                console.error("There was an error", error);
+            }
+        };
+        const domainInfo = await fetchDomainInfo();
+        console.log(domainInfo);
+        const domainCreatedDate =
+            domainInfo?.WhoisRecord?.createdDate?.split("-")[0];
+        // dataError = MISSING_WHOIS_DATA
+        const thisYear = new Date().getFullYear();
 
         // Condition 1: check the phishing keywords in url
         if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
