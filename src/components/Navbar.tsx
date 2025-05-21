@@ -3,7 +3,7 @@ const Navbar = () => {
         <nav className="bg-[#051923] px-4 py-4 shadow-md">
             <div className="flex items-center justify-center gap-2">
                 <img
-                    src="/src/assets/trapurl-logo.png"
+                    src="/trapurl-logo.png"
                     alt="site logo"
                     className="size-9"
                 />

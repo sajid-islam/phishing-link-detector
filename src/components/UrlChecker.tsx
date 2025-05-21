@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import punycode from "punycode/";
+import ResultModal from "./ResultModal";
 
 type InputEvent = React.FormEvent<HTMLFormElement>;
 
@@ -105,6 +106,9 @@ const abusedTlds: string[] = [
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
+    const modal = document.getElementById(
+        "my_modal_3"
+    ) as HTMLDialogElement | null;
 
     const handleUrlChecker = async (e: InputEvent) => {
         e.preventDefault();
@@ -232,6 +236,8 @@ const UrlChecker = () => {
                     </div>
                 </form>
             </section>
+
+            <ResultModal />
         </div>
     );
 };
