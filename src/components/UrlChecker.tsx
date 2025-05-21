@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import punycode from "punycode/";
 import ResultModal from "./ResultModal";
+import { toast } from "sonner";
 
 type InputEvent = React.FormEvent<HTMLFormElement>;
 
@@ -114,11 +115,15 @@ const UrlChecker = () => {
 
     const handleUrlChecker = async (e: InputEvent) => {
         e.preventDefault();
-        modal?.showModal();
 
         const input = e.currentTarget.elements.namedItem(
             "url"
         ) as HTMLInputElement;
+        console.log(input.value);
+        if (!input.value) {
+            return toast("⚠️ Please enter a URL before scanning");
+        }
+        modal?.showModal();
 
         const url: URL = new URL(input?.value);
         const urlHostname: string = url.hostname;
