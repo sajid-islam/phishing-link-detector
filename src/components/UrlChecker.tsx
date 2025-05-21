@@ -106,12 +106,15 @@ const abusedTlds: string[] = [
 
 const UrlChecker = () => {
     const [score, setScore] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const modal = document.getElementById(
         "my_modal_3"
     ) as HTMLDialogElement | null;
 
     const handleUrlChecker = async (e: InputEvent) => {
         e.preventDefault();
+        modal?.showModal();
 
         const input = e.currentTarget.elements.namedItem(
             "url"
@@ -138,6 +141,7 @@ const UrlChecker = () => {
                 return domainInfo.json();
             } catch (error) {
                 console.error("There was an error", error);
+                setLoading(false);
             }
         };
         const domainInfo = await fetchDomainInfo();
@@ -146,6 +150,11 @@ const UrlChecker = () => {
             domainInfo?.WhoisRecord?.createdDate?.split("-")[0];
 
         const thisYear = new Date().getFullYear();
+
+        // Stop loading when whois api will response
+        if (domainCreatedDate || domainInfo.WhoisRecord.dataError) {
+            setLoading(false);
+        }
 
         // Condition 1: check the phishing keywords in url
         if (phishingKeywords.some((pk) => urlHostname.includes(pk))) {
@@ -210,7 +219,7 @@ const UrlChecker = () => {
             }
         }
     };
-    console.log(score);
+
     return (
         <div className="bg-[#56cbf9] h-[40svh]">
             <section className="flex flex-col items-center text-center gap-2 pt-10">
@@ -232,12 +241,17 @@ const UrlChecker = () => {
                             placeholder="http://example.com"
                             className="input w-full focus:outline-0"
                         />{" "}
-                        <button className="btn bg-[#56cbf9]">Analyze</button>
+                        <button
+                            onClick={() => setLoading(true)}
+                            className="btn bg-[#56cbf9]"
+                        >
+                            Analyze
+                        </button>
                     </div>
                 </form>
             </section>
 
-            <ResultModal />
+            <ResultModal score={score} loading={loading} setScore={setScore} />
         </div>
     );
 };
